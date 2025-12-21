@@ -1,33 +1,50 @@
-// Node server which will handle socket io connections
-const io = require('socket.io')(process.env.PORT || 3001, {
-    cors: {
-        origin: "*",
-        methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"]
-    }
-})
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 
-console.log(process.env.PORT)
+const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+const PORT = 3001;
 const users = {};
 
-io.on('connection', socket => {
-    // If any new user joins, let other users connected to the server know!
-    socket.on('new-user-joined', name => {
-        users[socket.id] = name;
-        console.log("Joined : ", name)
-        socket.broadcast.emit('user-joined', name);
+io.on("connection", (socket) => {
+  console.log("✅ Socket connected:", socket.id);
+
+  socket.on("new-user-joined", (name) => {
+    users[socket.id] = name;
+    console.log("👤 User joined:", name);
+
+    socket.broadcast.emit("user-joined", name);
+  });
+
+  socket.on("send", (message) => {
+    if (!users[socket.id]) {
+      console.log("⚠️ Message sent before joining");
+      return;
+    }
+
+    socket.broadcast.emit("receive", {
+      message,
+      name: users[socket.id],
     });
+  });
 
-    // If someone sends a message, broadcast it to other people
-    socket.on('send', message => {
-        socket.broadcast.emit('receive', { message: message, name: users[socket.id] })
-    });
+  socket.on("disconnect", () => {
+    const name = users[socket.id];
+    if (name) {
+      socket.broadcast.emit("left", name);
+      delete users[socket.id];
+    }
+  });
+});
 
-    // If someone leaves the chat, let others know 
-    socket.on('disconnect', message => {
-        console.log("Left : ", users[socket.id])
-        socket.broadcast.emit('left', users[socket.id]);
-        delete users[socket.id];
-    });
-
-
-})
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
