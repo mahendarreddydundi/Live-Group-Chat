@@ -1,5 +1,5 @@
-<<<<<<< HEAD
-# GE Chat App
+
+# Live Chat App
 
 A real-time group chat application built with Node.js, Express, and Socket.IO. Chat with multiple users in real-time with instant message delivery.
 
