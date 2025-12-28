@@ -9,7 +9,6 @@
   "author": "Nishith P Shetty",
   "license": "ISC",
   "dependencies": {
-    "dependency": "^0.0.1",
     "express": "^5.2.1",
     "socket.io": "^4.8.1"
   }
