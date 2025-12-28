@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # GE Chat App
 
 A real-time group chat application built with Node.js, Express, and Socket.IO. Chat with multiple users in real-time with instant message delivery.
@@ -79,10 +80,3 @@ Live-Group-Chat-main/
 - **Port**: 3001
 - **CORS**: Enabled for all origins (configurable in `server/index.js`)
 
-## Author
-
-Nishith P Shetty
-
-## License
-
-ISC
